@@ -1,0 +1,18 @@
+# виртуальное окружение
+.venv/
+venv/
+
+# кеш питона
+__pycache__/
+*.pyc
+
+# данные пользователей
+document/
+img/
+voice_user/
+
+# секреты
+.env
+
+# PyCharm
+.idea/
