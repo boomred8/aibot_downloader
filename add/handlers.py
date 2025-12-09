@@ -1,24 +1,36 @@
 from aiogram import Router, F, types
 from aiogram.filters import Command
 
+import add.keyboard as keyboard
+
 router = Router()
 dm = False
 
 @router.message(Command('start'))
 async def start(message: types.Message):
-    await message.answer(f'Hello <b>{message.from_user.username}</b>', parse_mode='html')
+    await message.answer(f'Hello <b>{message.from_user.username}</b>', parse_mode='html', reply_markup=keyboard.main)
 
-@router.message(Command('download'))
+@router.message(F.text.casefold() == 'user_info')
+async def user_ifo(message: types.Message):
+    await message.answer(f"Information about u:\n"
+                         f" username: {message.from_user.username}\n"
+                         f" user_id: {message.from_user.id}\n"
+                         f" user_language_code: {message.from_user.language_code}", reply_markup=keyboard.main)
+
+@router.message(F.text.lower() == 'download_file')
 async def download(message: types.Message):
     global dm
-    await message.answer("Ты включил функцию download, что бы выйти напиши команду <b>/stop</b>", parse_mode='html')
+    await message.answer("Ты включил функцию download, что бы выйти напиши команду <b>/stop</b>", parse_mode='html', reply_markup=keyboard.inline_markup())
     dm = True
 
-@router.message(Command('stop'))
-async def stop(message: types.Message):
+@router.callback_query(F.data == 'stop')
+async def stop_download_callback(callback: types.CallbackQuery):
     global dm
-    await message.answer("Ты вышел!")
     dm = False
+    await callback.answer("Download выключен")
+    await callback.message.answer("Ты вышул из режима download",
+                          reply_markup=keyboard.main)
+
 
 @router.message(F.photo | F.voice | F.document)
 async def download_file(message: types.Message):

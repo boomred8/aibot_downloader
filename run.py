@@ -4,9 +4,9 @@ import os
 
 from aiogram import Bot, Dispatcher
 
-
 from main import bot_token
 from add.handlers import router
+
 
 bot = Bot(token=bot_token)
 dp = Dispatcher()
